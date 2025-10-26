@@ -9,7 +9,6 @@ namespace HighlightPlus {
 	public class TransparentWithDepth {
 
 		static Material bmDepthOnly;
-        static Material bmDepthClipping;
 
 
 		[MenuItem ("GameObject/Effects/Highlight Plus/Add Depth To Transparent Object", false, 100)]
@@ -18,7 +17,7 @@ namespace HighlightPlus {
 			if (renderer == null)
 				return;
 
-            if (!EditorUtility.DisplayDialog("Add Depth to Transparent Object", "This option will force the transparent object to write to the depth buffer by adding a new special material to the renderer (existing materials are preserved) so it can occlude and allow See-Through effect.\nOnly use on transparent objects.\n\nProceed?", "Yes", "No")) {
+			if (!EditorUtility.DisplayDialog ("Add Depth To Transparent Object", "This option will force the transparent object to write to the depth buffer by adding a new special material to the renderer (existing materials are preserved) so it can occlude and allow See-Through effect.\nOnly use on transparent objects.\n\nProceed?", "Yes", "No")) {
 				return;
 			}
 
@@ -36,96 +35,57 @@ namespace HighlightPlus {
 				newMaterials.Insert (0, bmDepthOnly);
 				renderer.sharedMaterials = newMaterials.ToArray ();
 			}
-        }
+		}
+
+		[MenuItem ("GameObject/Effects/Highlight Plus/Remove Depth Compatibility", false, 101)]
+		static void RemoveDepthOption () {
+
+			Renderer renderer = GetRenderer ();
+			if (renderer == null)
+				return;
+
+			Material[] materials = renderer.sharedMaterials;
+			for (int k = 0; k < materials.Length; k++) {
+				if (materials [k] == bmDepthOnly) {
+					List<Material> newMaterials = new List<Material> (renderer.sharedMaterials);
+					newMaterials.RemoveAt (k);
+					renderer.sharedMaterials = newMaterials.ToArray ();
+					return;
+				}
+			}
+
+			for (int k = 0; k < materials.Length; k++) {
+				if (materials [k] == bmDepthOnly) {
+					EditorUtility.DisplayDialog ("Depth Support", "This object was not previously modified! Nothing to do.", "Ok");
+					return;
+				}
+			}
+
+		}
 
 
-        [MenuItem("GameObject/Effects/Highlight Plus/Make Transparent Object Compatible with Depth Clipping", false, 101)]
-        static void AddDepthClippingOption() {
-            Renderer renderer = GetRenderer();
-            if (renderer == null)
-                return;
+		static Renderer GetRenderer () {
 
-            if (!EditorUtility.DisplayDialog("Make Transparent Object Compatible with Depth Clipping", "This option will force the transparent object to write to _CameraDepthBuffer which is used by depth clip option (existing materials are preserved) so it can occlude outline and glow effects in High Quality mode.\nOnly use on transparent objects which need to occlude other outline / glow effects in high quality mode.\n\nProceed?", "Yes", "No")) {
-                return;
-            }
+			if (Selection.activeGameObject == null) {
+				EditorUtility.DisplayDialog ("Depth Support", "This option can only be used on GameObjects.", "Ok");
+				return null;
+			}
+			Renderer renderer = Selection.activeGameObject.GetComponent<Renderer> ();
+			if (renderer == null) {
+				EditorUtility.DisplayDialog ("Depth Support", "This option can only be used on GameObjects with a Renderer component attached.", "Ok");
+				return null;
+			}
 
-            Material[] materials = renderer.sharedMaterials;
-            for (int k = 0; k < materials.Length; k++) {
-                if (materials[k] == bmDepthClipping) {
-                    EditorUtility.DisplayDialog("Depth Clipping Support", "Already set! Nothing to do.", "Ok");
-                    return;
-                }
-            }
-            if (materials == null) {
-                renderer.sharedMaterial = bmDepthClipping;
-            } else {
-                List<Material> newMaterials = new List<Material>(materials);
-                newMaterials.Insert(0, bmDepthClipping);
-                renderer.sharedMaterials = newMaterials.ToArray();
-            }
-        }
+			if (bmDepthOnly == null) {
+				bmDepthOnly = Resources.Load<Material> ("HighlightPlus/HighlightPlusDepthWrite");
+				if (bmDepthOnly == null) {
+					EditorUtility.DisplayDialog ("Depth Support", "HighlightPlusDepthWrite material not found!", "Ok");
+					return null;
+				}
+			}
 
-
-        [MenuItem("GameObject/Effects/Highlight Plus/Remove Depth Compatibility", false, 102)]
-        static void RemoveDepthOption() {
-
-            Renderer renderer = GetRenderer();
-            if (renderer == null)
-                return;
-
-            bool found = false;
-            Material[] materials = renderer.sharedMaterials;
-            for (int k = 0; k < materials.Length; k++) {
-                if (materials[k] == bmDepthOnly || materials[k] == bmDepthClipping) {
-                    materials[k] = null;
-                    found = true;
-                }
-            }
-            if (found) {
-                List<Material> newMaterials = new List<Material>();
-                for (int k = 0; k < materials.Length; k++) {
-                    if (materials[k] != null) {
-                        newMaterials.Add(materials[k]);
-                    }
-                }
-                renderer.sharedMaterials = newMaterials.ToArray();
-                return;
-            }
-
-            EditorUtility.DisplayDialog("Depth Support", "This object was not previously modified! Nothing to do.", "Ok");
-        }
-
-
-        static Renderer GetRenderer() {
-
-            if (Selection.activeGameObject == null) {
-                EditorUtility.DisplayDialog("Depth Support", "This option can only be used on GameObjects.", "Ok");
-                return null;
-            }
-            Renderer renderer = Selection.activeGameObject.GetComponent<Renderer>();
-            if (renderer == null) {
-                EditorUtility.DisplayDialog("Depth Support", "This option can only be used on GameObjects with a Renderer component attached.", "Ok");
-                return null;
-            }
-
-            if (bmDepthOnly == null) {
-                bmDepthOnly = Resources.Load<Material>("HighlightPlus/HighlightPlusDepthWrite");
-                if (bmDepthOnly == null) {
-                    EditorUtility.DisplayDialog("Depth Support", "HighlightPlusDepthWrite material not found!", "Ok");
-                    return null;
-                }
-            }
-
-            if (bmDepthClipping == null) {
-                bmDepthClipping = Resources.Load<Material>("HighlightPlus/HighlightPlusDepthClipComp");
-                if (bmDepthClipping == null) {
-                    EditorUtility.DisplayDialog("Depth Clipping Support", "HighlightPlusDepthClipComp material not found!", "Ok");
-                    return null;
-                }
-            }
-
-            return renderer;
-        }
+			return renderer;
+		}
 
 
 	}

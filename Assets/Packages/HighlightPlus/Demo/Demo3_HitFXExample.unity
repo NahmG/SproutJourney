@@ -622,7 +622,6 @@ MonoBehaviour:
   ignoreObjectVisibility: 0
   reflectionProbes: 0
   GPUInstancing: 1
-  depthClip: 0
   normalsOption: 0
   ignore: 0
   _highlighted: 0
@@ -644,7 +643,6 @@ MonoBehaviour:
   outlineQuality: 0
   outlineDownsampling: 2
   outlineVisibility: 0
-  outlineOptimalBlit: 1
   outlineBlitDebug: 0
   outlineIndependent: 0
   glow: 1
@@ -657,7 +655,6 @@ MonoBehaviour:
   glowMagicNumber2: 0.5
   glowAnimationSpeed: 1
   glowVisibility: 0
-  glowOptimalBlit: 1
   glowBlitDebug: 0
   glowBlendPasses: 1
   glowPasses:
@@ -917,7 +914,6 @@ MonoBehaviour:
   ignoreObjectVisibility: 0
   reflectionProbes: 0
   GPUInstancing: 1
-  depthClip: 0
   normalsOption: 0
   ignore: 0
   _highlighted: 0
@@ -926,12 +922,12 @@ MonoBehaviour:
   flipY: 0
   constantWidth: 1
   subMeshMask: -1
-  overlay: 0.01
+  overlay: 0.05
   overlayColor: {r: 1, g: 0.92156863, b: 0.015686275, a: 1}
   overlayAnimationSpeed: 0
   overlayMinIntensity: 0.5
   overlayBlending: 1
-  overlayTexture: {fileID: 2800000, guid: 6f4d7782c600f4fa1859b8f3c092189d, type: 3}
+  overlayTexture: {fileID: 2800000, guid: aeb7aff1c8c1241ee8bfdfc05e9a9e92, type: 3}
   overlayTextureScale: 1
   outline: 1
   outlineColor: {r: 0, g: 0, b: 0, a: 1}
@@ -939,7 +935,6 @@ MonoBehaviour:
   outlineQuality: 0
   outlineDownsampling: 2
   outlineVisibility: 0
-  outlineOptimalBlit: 1
   outlineBlitDebug: 0
   outlineIndependent: 0
   glow: 1.78
@@ -952,7 +947,6 @@ MonoBehaviour:
   glowMagicNumber2: 0.5
   glowAnimationSpeed: 0.2
   glowVisibility: 0
-  glowOptimalBlit: 1
   glowBlitDebug: 0
   glowBlendPasses: 1
   glowPasses:
@@ -1012,7 +1006,7 @@ MonoBehaviour:
   hitFxMode: 2
   hitFxFadeOutDuration: 0.25
   hitFxColor: {r: 0.93333334, g: 1.1058824, b: 2, a: 1}
-  hitFxRadius: 0.1
+  hitFxRadius: 0.5
 --- !u!114 &656694101
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1115,6 +1109,7 @@ GameObject:
   - component: {fileID: 965526244}
   - component: {fileID: 965526243}
   - component: {fileID: 965526240}
+  - component: {fileID: 965526241}
   m_Layer: 0
   m_Name: Camera
   m_TagString: MainCamera
@@ -1131,6 +1126,37 @@ AudioListener:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 965526239}
   m_Enabled: 1
+--- !u!114 &965526241
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 965526239}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a79441f348de89743a2939f4d699eac1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_RenderShadows: 1
+  m_RequiresDepthTextureOption: 2
+  m_RequiresOpaqueTextureOption: 2
+  m_CameraType: 0
+  m_Cameras: []
+  m_RendererIndex: -1
+  m_VolumeLayerMask:
+    serializedVersion: 2
+    m_Bits: 1
+  m_VolumeTrigger: {fileID: 0}
+  m_RenderPostProcessing: 0
+  m_Antialiasing: 0
+  m_AntialiasingQuality: 2
+  m_StopNaN: 0
+  m_Dithering: 0
+  m_ClearDepth: 1
+  m_RequiresDepthTexture: 0
+  m_RequiresColorTexture: 0
+  m_Version: 2
 --- !u!20 &965526243
 Camera:
   m_ObjectHideFlags: 0
@@ -1454,7 +1480,6 @@ MonoBehaviour:
   ignoreObjectVisibility: 0
   reflectionProbes: 0
   GPUInstancing: 1
-  depthClip: 0
   normalsOption: 0
   ignore: 0
   _highlighted: 0
@@ -1476,7 +1501,6 @@ MonoBehaviour:
   outlineQuality: 0
   outlineDownsampling: 2
   outlineVisibility: 0
-  outlineOptimalBlit: 1
   outlineBlitDebug: 0
   outlineIndependent: 0
   glow: 1.32
@@ -1489,7 +1513,6 @@ MonoBehaviour:
   glowMagicNumber2: 0.5
   glowAnimationSpeed: 1
   glowVisibility: 0
-  glowOptimalBlit: 1
   glowBlitDebug: 0
   glowBlendPasses: 1
   glowPasses:
@@ -2073,10 +2096,10 @@ MonoBehaviour:
   m_GameObject: {fileID: 2118005892}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 53883b254655d44479b3d33caba0be58, type: 3}
+  m_Script: {fileID: 11500000, guid: b2533fb71c5d747c58192bcd7d6cd276, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  hitSound: {fileID: 8300000, guid: 0cf993a8419a44000883892928cbdd4d, type: 3}
+  hitSound: {fileID: 8300000, guid: 9c2f7decce97e409a8ecfc1181535dc2, type: 3}
 --- !u!4 &2118005894
 Transform:
   m_ObjectHideFlags: 0

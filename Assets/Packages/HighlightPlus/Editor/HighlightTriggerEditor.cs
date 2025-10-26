@@ -3,10 +3,11 @@ using UnityEngine;
 
 namespace HighlightPlus {
     [CustomEditor(typeof(HighlightTrigger))]
-    public class HighlightTriggerEditor : Editor {
+    public class HighlightTriggerEditor : UnityEditor.Editor {
 
-        SerializedProperty highlightOnHover, triggerMode, raycastCamera, raycastSource, minDistance, maxDistance, respectUI, volumeLayerMask;
-        SerializedProperty selectOnClick, selectedProfile, selectedAndHighlightedProfile, singleSelection, toggleOnClick;
+        SerializedProperty highlightOnHover, triggerMode, raycastCamera, raycastSource, raycastLayerMask;
+        SerializedProperty minDistance, maxDistance, respectUI, volumeLayerMask;
+        SerializedProperty selectOnClick, selectedProfile, selectedAndHighlightedProfile, singleSelection, toggleOnClick, keepSelection;
         HighlightTrigger trigger;
 
         void OnEnable() {
@@ -14,6 +15,7 @@ namespace HighlightPlus {
             triggerMode = serializedObject.FindProperty("triggerMode");
             raycastCamera = serializedObject.FindProperty("raycastCamera");
             raycastSource = serializedObject.FindProperty("raycastSource");
+            raycastLayerMask = serializedObject.FindProperty("raycastLayerMask");
             minDistance = serializedObject.FindProperty("minDistance");
             maxDistance = serializedObject.FindProperty("maxDistance");
             respectUI = serializedObject.FindProperty("respectUI");
@@ -23,26 +25,27 @@ namespace HighlightPlus {
             selectedAndHighlightedProfile = serializedObject.FindProperty("selectedAndHighlightedProfile");
             singleSelection = serializedObject.FindProperty("singleSelection");
             toggleOnClick = serializedObject.FindProperty("toggle");
+            keepSelection = serializedObject.FindProperty("keepSelection");
             trigger = (HighlightTrigger)target;
             trigger.Init();
         }
 
         public override void OnInspectorGUI() {
 
-            serializedObject.Update();
+			serializedObject.Update ();
 
-            if (trigger.triggerMode == TriggerMode.RaycastOnThisObjectAndChildren) {
-                if (trigger.colliders == null || trigger.colliders.Length == 0) {
-                    EditorGUILayout.HelpBox("No collider found on this object or any of its children. Add colliders to allow automatic highlighting.", MessageType.Warning);
-                }
+			if (trigger.triggerMode == TriggerMode.RaycastOnThisObjectAndChildren) {
+                if (!trigger.hasColliders && !trigger.hasColliders2D) {
+					EditorGUILayout.HelpBox ("No collider found on this object or any of its children. Add colliders to allow automatic highlighting.", MessageType.Warning);
+				}
             } else {
 #if ENABLE_INPUT_SYSTEM
                 if (trigger.triggerMode == TriggerMode.ColliderEventsOnlyOnThisObject) {
                     EditorGUILayout.HelpBox("This trigger mode is not compatible with the new input system.", MessageType.Error);
                 }
 #endif
-                if (trigger.GetComponent<Collider>() == null) {
-                    EditorGUILayout.HelpBox("No collider found on this object. Add a collider to allow automatic highlighting.", MessageType.Error);
+                if (trigger.GetComponent<Collider>() == null && trigger.GetComponent<Collider2D>() == null) {
+					EditorGUILayout.HelpBox ("No collider found on this object. Add a collider to allow automatic highlighting.", MessageType.Error);
                 }
             }
 
@@ -52,6 +55,7 @@ namespace HighlightPlus {
                     EditorGUI.indentLevel++;
                     EditorGUILayout.PropertyField(raycastCamera);
                     EditorGUILayout.PropertyField(raycastSource);
+                    EditorGUILayout.PropertyField(raycastLayerMask);
                     EditorGUILayout.PropertyField(minDistance);
                     EditorGUILayout.PropertyField(maxDistance);
                     EditorGUI.indentLevel--;
@@ -74,7 +78,20 @@ namespace HighlightPlus {
                 EditorGUILayout.PropertyField(selectedAndHighlightedProfile);
                 EditorGUILayout.PropertyField(singleSelection);
                 EditorGUILayout.PropertyField(toggleOnClick);
-                EditorGUILayout.HelpBox("To deselect any object by clicking outside, add a Highlight Manager to the scene.", MessageType.Info);
+                if (trigger.triggerMode == TriggerMode.RaycastOnThisObjectAndChildren) {
+                    EditorGUI.BeginChangeCheck();
+                    EditorGUILayout.PropertyField(keepSelection);
+                    if (EditorGUI.EndChangeCheck()) {
+                        // Update all triggers
+                        HighlightTrigger[] triggers = Misc.FindObjectsOfType<HighlightTrigger>();
+                        foreach(HighlightTrigger t in triggers) {
+                            if (t.keepSelection != keepSelection.boolValue) {
+                                t.keepSelection = keepSelection.boolValue;
+                                EditorUtility.SetDirty(t);
+                            }
+                        }
+                    }
+                }
                 EditorGUI.indentLevel--;
             }
 

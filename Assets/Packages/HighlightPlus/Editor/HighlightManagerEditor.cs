@@ -5,13 +5,13 @@ using UnityEngine;
 
 namespace HighlightPlus {
     [CustomEditor(typeof(HighlightManager))]
-    public class HighlightManagerEditor : Editor {
+    public class HighlightManagerEditor : UnityEditor.Editor {
 
         SerializedProperty highlightOnHover, layerMask, raycastCamera, raycastSource, minDistance, maxDistance, respectUI;
-        SerializedProperty selectOnClick, selectedProfile, selectedAndHighlightedProfile, singleSelection, toggleOnClick;
+        SerializedProperty selectOnClick, selectedProfile, selectedAndHighlightedProfile, singleSelection, toggleOnClick, keepSelection;
 
         void OnEnable() {
-            highlightOnHover = serializedObject.FindProperty("highlightOnHover");
+            highlightOnHover = serializedObject.FindProperty("_highlightOnHover");
             layerMask = serializedObject.FindProperty("layerMask");
             raycastCamera = serializedObject.FindProperty("raycastCamera");
             raycastSource = serializedObject.FindProperty("raycastSource");
@@ -23,6 +23,7 @@ namespace HighlightPlus {
             selectedAndHighlightedProfile = serializedObject.FindProperty("selectedAndHighlightedProfile");
             singleSelection = serializedObject.FindProperty("singleSelection");
             toggleOnClick = serializedObject.FindProperty("toggle");
+            keepSelection = serializedObject.FindProperty("keepSelection");
         }
 
         public override void OnInspectorGUI() {
@@ -45,6 +46,7 @@ namespace HighlightPlus {
                 EditorGUILayout.PropertyField(selectedAndHighlightedProfile);
                 EditorGUILayout.PropertyField(singleSelection);
                 EditorGUILayout.PropertyField(toggleOnClick);
+                EditorGUILayout.PropertyField(keepSelection);
                 EditorGUI.indentLevel--;
             }
 
@@ -52,17 +54,17 @@ namespace HighlightPlus {
         }
 
 
-        [MenuItem("GameObject/Effects/Highlight Plus/Create Manager", false, 10)]
-        static void CreateManager(MenuCommand menuCommand) {
-            HighlightManager manager = FindObjectOfType<HighlightManager>();
-            if (manager == null) {
-                GameObject managerGO = new GameObject("HighlightPlusManager");
-                manager = managerGO.AddComponent<HighlightManager>();
-                // Register root object for undo.
-                Undo.RegisterCreatedObjectUndo(manager, "Create Highlight Plus Manager");
-            }
-            Selection.activeObject = manager;
-        }
+        [MenuItem("GameObject/Effects/Highlight Plus/Create Highlight Manager", false, 10)]
+		static void CreateManager (MenuCommand menuCommand) {
+			HighlightManager manager = Misc.FindObjectOfType<HighlightManager> ();
+			if (manager == null) {
+				GameObject managerGO = new GameObject ("HighlightPlusManager");
+				manager = managerGO.AddComponent<HighlightManager> ();
+				// Register root object for undo.
+				Undo.RegisterCreatedObjectUndo (manager, "Create Highlight Plus Manager");
+			}
+			Selection.activeObject = manager;
+		}
 
     }
 

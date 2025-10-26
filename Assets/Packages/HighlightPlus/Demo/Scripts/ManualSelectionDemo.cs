@@ -10,7 +10,7 @@ namespace HighlightPlus.Demos {
         public Transform objectToSelect;
 
         void Start() {
-            hm = FindObjectOfType<HighlightManager>();
+            hm = Misc.FindObjectOfType<HighlightManager>();
         }
 
         void Update() {

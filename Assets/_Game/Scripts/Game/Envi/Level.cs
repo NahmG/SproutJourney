@@ -1,22 +1,11 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using DG.Tweening;
 using Sirenix.OdinInspector;
 using UnityEditor;
 using UnityEngine;
 
-[Serializable]
-public class LevelData
-{
-    public int index = 0;
-    public LevelState state = LevelState.LOCK;
-    public enum LevelState
-    {
-        LOCK = 0,
-        PLAY = 1,
-        COMPLETE = 2,
-    }
-}
 
 public class Level : MonoBehaviour
 {
@@ -60,6 +49,11 @@ public class Level : MonoBehaviour
     {
         sprouts.Remove(sprout);
         if (sprouts.Count == 0)
+        {
+            DOVirtual.DelayedCall(.5f, OnLevelComplete);
+        }
+
+        void OnLevelComplete()
         {
             GameplayManager.Ins.OnGameEnd(true);
         }

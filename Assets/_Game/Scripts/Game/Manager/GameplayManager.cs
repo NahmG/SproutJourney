@@ -1,6 +1,7 @@
 
 using System;
 using System.Collections.Generic;
+using Unity.Android.Gradle.Manifest;
 using UnityEngine;
 
 public class GameplayManager : Singleton<GameplayManager>
@@ -13,8 +14,13 @@ public class GameplayManager : Singleton<GameplayManager>
 
     void Start()
     {
-        LevelManager.Ins.OnInit();
         UIManager.Ins.OpenUI<UIMainMenu>();
+    }
+
+    public void LoadLevel()
+    {
+        LoadGame();
+        StartLevel();
     }
 
     public void LoadGame()
@@ -33,7 +39,7 @@ public class GameplayManager : Singleton<GameplayManager>
         ConstructLevel();
     }
 
-    void ConstructLevel()
+    public void ConstructLevel()
     {
         isGameEnd = false;
         currentLevel ??= LevelManager.Ins.LoadLevel();
@@ -41,14 +47,14 @@ public class GameplayManager : Singleton<GameplayManager>
 
         if (player == null)
         {
-            player = SimplePool.Spawn<Player>(PoolType.PLAYER, currentLevel.SpawnPoint.position, Quaternion.identity);
+            player = SimplePool.Spawn<Player>(PoolType.PLAYER);
         }
-
         player?.OnInit();
+        player.TF.position = currentLevel.SpawnPoint.position;
         player._OnExitLand += LevelManager.Ins.OnPlayerExitLand;
     }
 
-    void DestructLevel()
+    public void DestructLevel()
     {
         if (currentLevel != null)
         {
@@ -71,7 +77,8 @@ public class GameplayManager : Singleton<GameplayManager>
         if (isWin)
         {
             UIManager.Ins.OpenUI<UIWin>();
-            LevelManager.Ins.CompletedLevel();
+            DataManager.Ins.GameData.CompletedLevel();
+            DataManager.Ins.Save();
         }
         else
         {

@@ -73,35 +73,12 @@ public class PlayerAttackState : AttackState
     public PlayerAttackState(CoreSystem core) : base(core)
     {
     }
-
-    public override void Update()
-    {
-        if (Core.NAVIGATION.MoveDirection.sqrMagnitude > .01f)
-        {
-            ChangeState(STATE.MOVE);
-        }
-        base.Update();
-    }
-
-    protected override void RotateTowardTarget()
-    {
-        base.RotateTowardTarget();
-
-        Vector3 dir = Core.SENSOR.TargetDir;
-        Core.DISPLAY.SetSkinRotation(Quaternion.LookRotation(dir), true);
-    }
 }
 
 public class PlayerDeadState : DeadState
 {
     public PlayerDeadState(CoreSystem core) : base(core)
     {
-    }
-
-    public override void OnDeath()
-    {
-        base.OnDeath();
-
     }
 }
 
@@ -110,10 +87,5 @@ public class PlayerWinState : BaseLogicState
     public override STATE Id => STATE.WIN;
     public PlayerWinState(CoreSystem core) : base(core)
     {
-    }
-
-    public override void Enter()
-    {
-
     }
 }

@@ -1,5 +1,7 @@
 using System;
 using DG.Tweening;
+using HighlightPlus;
+using Sirenix.OdinInspector;
 using UnityEngine;
 
 public class Sprout : MonoBehaviour
@@ -11,6 +13,9 @@ public class Sprout : MonoBehaviour
 
     [SerializeField]
     float floatHeight = 0.5f, duration = 1.5f;
+
+    [SerializeField]
+    HighlightEffect effect;
 
     Tween floatTween;
 

@@ -34,7 +34,7 @@ public class Player : Character
 
     public void OnEnterNewCell(Cell cell)
     {
-        if (_nav.currentCell != null && cell.Land.LandType != _nav.currentCell.Land.LandType)
+        if (_nav.currentCell != null && cell.Land != _nav.currentCell.Land)
             _OnExitLand?.Invoke(_nav.currentCell.Land);
 
         _nav.currentCell = cell;

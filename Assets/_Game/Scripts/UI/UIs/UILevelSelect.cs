@@ -40,12 +40,14 @@ public class UILevelSelect : UICanvas
 
     void OnLevelBtnClick(int index)
     {
-        LevelManager.Ins.SetLevel(index);
-        GameplayManager.Ins.LoadGame();
-        GameplayManager.Ins.StartLevel();
+        GameData gameData = DataManager.Ins.GameData;
+        LevelData level = gameData.GetLevel(index);
 
-        UIManager.Ins.OpenUI<UIGameplay>();
-        Close();
+        if (level.state != LevelData.LevelState.LOCK)
+        {
+            UIManager.Ins.OpenUI<UILoading>(level);
+            Close();
+        }
     }
 
     void OnHomeBtnClick(int index)
@@ -56,11 +58,12 @@ public class UILevelSelect : UICanvas
 
     void CreateLevelBtn()
     {
-        levels = LevelManager.Ins.levelDatas;
+        levels = DataManager.Ins.GameData.levels.levelDatas;
+
         for (int i = 0; i < levels.Length; i++)
         {
             UIButton btn = Instantiate(levelBtnPref, grid);
-            btn.SetIndex(i);
+            btn.SetIndex(levels[i].index);
             btn.SetData(levels[i].index.ToString());
             btn.SetState((int)levels[i].state);
 

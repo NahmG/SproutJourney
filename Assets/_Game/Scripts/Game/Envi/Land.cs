@@ -1,5 +1,6 @@
 using System;
 using DG.Tweening;
+using UnityEditor;
 using UnityEngine;
 
 public class Land : GameUnit
@@ -121,4 +122,24 @@ public class Land : GameUnit
     {
         TF.DOScale(Vector3.zero, 0.3f).SetEase(Ease.InBack).OnComplete(() => action?.Invoke());
     }
+
+#if UNITY_EDITOR
+    void OnDrawGizmos()
+    {
+        string label = $"{Index}";
+        if (Camera.current != null)
+        {
+            Vector3 screenPos = Camera.current.WorldToScreenPoint(transform.position);
+            if (screenPos.z > 0)
+            {
+                Handles.BeginGUI();
+                GUIStyle style = new GUIStyle(EditorStyles.boldLabel);
+                style.normal.textColor = Color.yellow;
+                GUI.Label(new Rect(screenPos.x, Screen.height - screenPos.y, 100, 20), label, style);
+                Handles.EndGUI();
+            }
+        }
+    }
+
+#endif
 }

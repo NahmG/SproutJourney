@@ -1,4 +1,5 @@
 ﻿using System;
+using DG.Tweening;
 using Sirenix.OdinInspector;
 using UnityEngine;
 using UnityEngine.Serialization;
@@ -12,10 +13,16 @@ public class UICanvas : MonoBehaviour
     [Header("Anim")]
     [SerializeField]
     protected bool useAnimator;
+    [SerializeField]
+    protected bool useFadeAnim;
     [ShowIf("useAnimator")]
     [SerializeField]
     Animator anim;
     string currentAnim = "Open";
+
+    [ShowIf("useFadeAnim")]
+    [SerializeField]
+    CanvasGroup canvasGroup;
 
     [Header("Ref")]
     [SerializeField]
@@ -35,11 +42,19 @@ public class UICanvas : MonoBehaviour
     public virtual void Show()
     {
         gameObject.SetActive(true);
+        if (useFadeAnim)
+        {
+            RunFadeAnimation(.3f, true);
+        }
     }
 
     public virtual void Hide()
     {
-        gameObject.SetActive(false);
+        if (useFadeAnim)
+        {
+            RunFadeAnimation(.3f, false, () => gameObject.SetActive(false));
+        }
+        else gameObject.SetActive(false); ;
     }
 
     public virtual void Setup(object param = null)
@@ -57,6 +72,11 @@ public class UICanvas : MonoBehaviour
     {
         UpdateUI();
         gameObject.SetActive(true);
+
+        if (useFadeAnim)
+        {
+            RunFadeAnimation(.2f, true);
+        }
     }
 
     public virtual void UpdateUI() { }
@@ -64,7 +84,11 @@ public class UICanvas : MonoBehaviour
     public virtual void Close()
     {
         UIManager.Ins.RemoveBackUI(this);
-        OnClose();
+        if (useFadeAnim)
+        {
+            RunFadeAnimation(.3f, false, OnClose);
+        }
+        else OnClose();
     }
 
     public virtual void CloseDirectly(object param = null)
@@ -92,4 +116,18 @@ public class UICanvas : MonoBehaviour
         }
     }
 
+    void RunFadeAnimation(float time, bool open, Action action = null)
+    {
+        float from = open ? 0 : 1;
+        float to = open ? 1 : 0;
+
+        Sequence seq = DOTween.Sequence();
+
+        seq.Append(canvasGroup.DOFade(to, time).From(from));
+        seq.Append(rectTf.DOScale(to, time).From(from));
+
+        seq.SetEase(Ease.OutQuad);
+
+        seq.OnComplete(() => action?.Invoke());
+    }
 }

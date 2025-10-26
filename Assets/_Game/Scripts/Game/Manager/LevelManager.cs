@@ -5,31 +5,37 @@ using UnityEngine.AI;
 public class LevelManager : Singleton<LevelManager>
 {
     public Level[] levels = new Level[15];
-    public LevelData[] levelDatas = new LevelData[15];
 
     [HideInInspector]
     public Level currentLevel;
-    int levelIndex;
-    public int Level => levelIndex;
+
+    LevelManagerData _data;
+    public LevelManagerData Data
+    {
+        get
+        {
+            _data ??= DataManager.Ins.GameData.levels;
+            return _data;
+        }
+    }
+    public int LevelIndex => Data.currentLevelIndex;
 
     void Awake()
     {
         DontDestroyOnLoad(this);
     }
 
-    public void OnInit()
+    public bool NextLevel()
     {
-        levelIndex = 1;
-    }
+        int next = LevelIndex + 1;
+        LevelData level = DataManager.Ins.GameData.GetLevel(next);
 
-    public void SetLevel(int index)
-    {
-        levelIndex = index;
-    }
-
-    public void NextLevel()
-    {
-        levelIndex = levelIndex < levels.Length ? levelIndex + 1 : levelIndex;
+        if (level != null && level.state != LevelData.LevelState.LOCK)
+        {
+            DataManager.Ins.GameData.SetCurrentLevel(LevelIndex + 1);
+            return true;
+        }
+        return false;
     }
 
     public Level LoadLevel()
@@ -44,13 +50,8 @@ public class LevelManager : Singleton<LevelManager>
 
     Level GetPrefabLevel()
     {
-        return levelIndex > 1 ? levels[levelIndex - 1] : levels[0];
+        return LevelIndex > 1 ? levels[LevelIndex - 1] : levels[0];
     }
-
-    public void LockLevel(int id) => levelDatas[id - 1].state = LevelData.LevelState.LOCK;
-    public void UnlockLevel(int id) => levelDatas[id - 1].state = LevelData.LevelState.PLAY;
-    //complete current level
-    public void CompletedLevel() => levelDatas[Level - 1].state = LevelData.LevelState.COMPLETE;
 
     public void OnPlayerExitLand(Land oldLand)
     {
