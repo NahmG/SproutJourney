@@ -16,17 +16,4 @@ public static class UTILS
         }
         return list;
     }
-
-    public static bool IsPlatformValid(Vector3 start, Vector3 dir, LayerMask layer, out Cell cell)
-    {
-        cell = null;
-        Vector3 origin = start + dir;
-
-        if (Physics.Raycast(origin + Vector3.up * 5f, Vector3.down, out RaycastHit hit, 10f, layer))
-        {
-            cell = hit.collider.GetComponent<Cell>();
-            return cell != null && cell.IsEmpty;
-        }
-        return false;
-    }
 }

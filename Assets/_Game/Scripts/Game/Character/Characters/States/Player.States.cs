@@ -2,6 +2,7 @@ using Core;
 using Core.Movement;
 using Core.Navigation;
 using UnityEngine;
+using UnityEngine.EventSystems;
 
 public class PlayerIdleState : IdleState
 {
@@ -21,9 +22,11 @@ public class PlayerIdleState : IdleState
     {
         base.Update();
 
-        if (_nav.MoveDirection.sqrMagnitude > .01f && _nav.CanMove(out _))
+        if (_nav.MoveDirection.sqrMagnitude > .01f)
         {
-            ChangeState(STATE.MOVE);
+            Core.DISPLAY.SetSkinRotation(Quaternion.LookRotation(_nav.MoveDirection), true);
+            if (_nav.CanMove(out _))
+                ChangeState(STATE.MOVE);
         }
     }
 }
@@ -51,11 +54,9 @@ public class PlayerMoveState : MoveState
         if (_nav.ReachDestination())
         {
             ChangeState(STATE.IDLE);
-            Player player = _char as Player;
-            player.OnEnterNewCell(targetCell);
+            (_char as Player).OnEnterNewCell(targetCell);
         }
 
-        Core.DISPLAY.SetSkinRotation(Quaternion.LookRotation(_nav.MoveDirection), true);
         _move.MoveToDestination(_nav.Destination);
     }
 }

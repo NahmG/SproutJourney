@@ -12,6 +12,7 @@ public abstract class UIButtonComponent : MonoBehaviour
     {
         public Image Image;
         [FoldoutGroup("Setting")] public Sprite[] Sprites;
+        [FoldoutGroup("Setting")] public bool[] Actives;
         [FoldoutGroup("Setting")] public bool[] RaycaseTargets = new bool[] { false, true, true, false };
         [FoldoutGroup("Setting")] public Color[] Colors = new Color[] { new Color(1 / 3f, 1 / 3f, 1 / 3f), Color.white, Color.white, Color.white };
         [FoldoutGroup("Setting")] public Image.Type[] Types = new Image.Type[] { Image.Type.Sliced, Image.Type.Sliced, Image.Type.Sliced, Image.Type.Simple };

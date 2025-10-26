@@ -3,21 +3,13 @@ using UnityEngine;
 public class Cell : MonoBehaviour
 {
     public Transform Tf;
-    public Transform obstacleTf;
+    [SerializeField]
+    Transform obstacleTf;
     GameObject obstacle;
-
     Land land;
     public Land Land => land;
 
-    bool isEmpty = true;
-    public bool IsEmpty
-    {
-        get
-        {
-            isEmpty = obstacle == null;
-            return isEmpty;
-        }
-    }
+    public bool IsEmpty => obstacle == null;
 
     public void OnInit(Land land)
     {
@@ -39,5 +31,19 @@ public class Cell : MonoBehaviour
             Destroy(obstacle);
             obstacle = null;
         }
+    }
+
+    public static bool IsValid(Vector3 start, Vector3 dir, LayerMask layer, out Cell cell)
+    {
+        cell = null;
+        Vector3 origin = start + dir;
+
+        if (Physics.Raycast(origin + Vector3.up * 1f, Vector3.down, out RaycastHit hit, 10f, layer))
+        {
+            cell = hit.collider.GetComponent<Cell>();
+            return cell != null && cell.IsEmpty;
+        }
+
+        return false;
     }
 }

@@ -4,7 +4,8 @@ using UnityEngine.AI;
 
 public class LevelManager : Singleton<LevelManager>
 {
-    [SerializeField] Level[] levels;
+    public Level[] levels = new Level[15];
+    public LevelData[] levelDatas = new LevelData[15];
 
     [HideInInspector]
     public Level currentLevel;
@@ -19,6 +20,11 @@ public class LevelManager : Singleton<LevelManager>
     public void OnInit()
     {
         levelIndex = 1;
+    }
+
+    public void SetLevel(int index)
+    {
+        levelIndex = index;
     }
 
     public void NextLevel()
@@ -40,6 +46,11 @@ public class LevelManager : Singleton<LevelManager>
     {
         return levelIndex > 1 ? levels[levelIndex - 1] : levels[0];
     }
+
+    public void LockLevel(int id) => levelDatas[id - 1].state = LevelData.LevelState.LOCK;
+    public void UnlockLevel(int id) => levelDatas[id - 1].state = LevelData.LevelState.PLAY;
+    //complete current level
+    public void CompletedLevel() => levelDatas[Level - 1].state = LevelData.LevelState.COMPLETE;
 
     public void OnPlayerExitLand(Land oldLand)
     {

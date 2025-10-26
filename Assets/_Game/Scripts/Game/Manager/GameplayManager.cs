@@ -14,17 +14,7 @@ public class GameplayManager : Singleton<GameplayManager>
     void Start()
     {
         LevelManager.Ins.OnInit();
-        LoadGame();
-        UIManager.Ins.OpenUI<UIGameplay>();
-
-        player._OnExitLand += LevelManager.Ins.OnPlayerExitLand;
-
-        StartLevel();
-    }
-
-    void OnDestroy()
-    {
-        player._OnExitLand -= LevelManager.Ins.OnPlayerExitLand;
+        UIManager.Ins.OpenUI<UIMainMenu>();
     }
 
     public void LoadGame()
@@ -47,14 +37,15 @@ public class GameplayManager : Singleton<GameplayManager>
     {
         isGameEnd = false;
         currentLevel ??= LevelManager.Ins.LoadLevel();
+        currentLevel?.OnInit();
 
-        Cell spawnPoint = currentLevel.PlayerSpawnPoint;
         if (player == null)
         {
-            player = SimplePool.Spawn<Player>(PoolType.PLAYER, spawnPoint.Tf.position, Quaternion.identity);
+            player = SimplePool.Spawn<Player>(PoolType.PLAYER, currentLevel.SpawnPoint.position, Quaternion.identity);
         }
-        player.OnInit();
-        player.SetCell(spawnPoint);
+
+        player?.OnInit();
+        player._OnExitLand += LevelManager.Ins.OnPlayerExitLand;
     }
 
     void DestructLevel()
@@ -64,6 +55,8 @@ public class GameplayManager : Singleton<GameplayManager>
             Destroy(currentLevel.gameObject);
             currentLevel = null;
         }
+        if (player)
+            player._OnExitLand -= LevelManager.Ins.OnPlayerExitLand;
     }
 
     public void Pause(bool isPause)
@@ -77,11 +70,12 @@ public class GameplayManager : Singleton<GameplayManager>
         UIManager.Ins.CloseAll();
         if (isWin)
         {
-            // UIManager.Ins.OpenUI<UIWin>();
+            UIManager.Ins.OpenUI<UIWin>();
+            LevelManager.Ins.CompletedLevel();
         }
         else
         {
-            // UIManager.Ins.OpenUI<UILose>();
+            UIManager.Ins.OpenUI<UILose>();
         }
     }
 }

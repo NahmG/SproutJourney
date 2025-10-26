@@ -16,5 +16,5 @@ MonoBehaviour:
     BaseValue: 10
     _value: 10
   _speed:
-    BaseValue: 5
-    _value: 5
+    BaseValue: 3
+    _value: 3

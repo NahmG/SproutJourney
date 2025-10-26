@@ -1,3 +1,5 @@
+using System;
+using DG.Tweening;
 using UnityEngine;
 
 public class Land : GameUnit
@@ -5,8 +7,10 @@ public class Land : GameUnit
     [SerializeField]
     LandData data;
 
+    [SerializeField]
     LAND_TYPE landType;
     public LAND_TYPE LandType => landType;
+    [SerializeField]
     int index;
     public int Index => index;
 
@@ -14,18 +18,8 @@ public class Land : GameUnit
     Cell cellPrefab;
     Cell[,] cells = new Cell[3, 3];
 
+    [SerializeField]
     GameObject landView;
-    bool isInitCell = false;
-
-
-    void Awake()
-    {
-        if (!isInitCell)
-        {
-            isInitCell = true;
-            GenerateCells();
-        }
-    }
 
     public static Land CreateLand(Transform parent, LAND_TYPE landType, int index)
     {
@@ -33,7 +27,7 @@ public class Land : GameUnit
         land.landType = landType;
         land.index = index;
 
-        land.Init();
+        land.Init(true);
         return land;
     }
 
@@ -43,54 +37,39 @@ public class Land : GameUnit
         land.landType = landType;
         land.index = index;
 
-        land.Init();
+        land.SetSkin();
         return land;
     }
 
-    public void Init()
+    public void Init(bool playAnim = false)
     {
-        if (!isInitCell)
-        {
-            isInitCell = true;
-            GenerateCells();
-        }
+        GenerateCells();
         AddObstacle();
         SetSkin();
+
+        if (playAnim)
+            AnimInit();
     }
 
-    public void Despawn()
+    public void OnDespawn(Action action = null)
+    {
+        AnimDespawn(() =>
+        {
+            DespawnImmediate();
+            action?.Invoke();
+        });
+    }
+
+    public void DespawnImmediate()
     {
         for (int x = 0; x < 3; x++)
         {
             for (int y = 0; y < 3; y++)
             {
-                if (!cells[x, y].IsEmpty)
-                {
-                    cells[x, y].Clear();
-                }
+                Destroy(cells[x, y].gameObject);
             }
         }
         SimplePool.Despawn(this);
-    }
-
-    public void SpawnNextLand()
-    {
-        Debug.Log("Spawn Next Land");
-        switch (landType)
-        {
-            case LAND_TYPE.GRASS:
-
-                break;
-            case LAND_TYPE.SNOW:
-
-                break;
-            case LAND_TYPE.SAND:
-
-                break;
-            case LAND_TYPE.VOLCANIC:
-
-                break;
-        }
     }
 
     void GenerateCells()
@@ -131,5 +110,15 @@ public class Land : GameUnit
             Destroy(landView);
         }
         landView = Instantiate(data.GetLandPrefab((int)landType), SkinTF);
+    }
+
+    void AnimInit()
+    {
+        TF.DOScale(Vector3.one, 0.3f).From(Vector3.zero).SetEase(Ease.OutBack);
+    }
+
+    void AnimDespawn(Action action = null)
+    {
+        TF.DOScale(Vector3.zero, 0.3f).SetEase(Ease.InBack).OnComplete(() => action?.Invoke());
     }
 }

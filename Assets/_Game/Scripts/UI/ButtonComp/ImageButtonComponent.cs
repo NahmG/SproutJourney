@@ -14,6 +14,10 @@ public class ImageButtonComponent : UIButtonComponent
             {
                 Data[i].Image.sprite = Data[i].Sprites[(int)state];
             }
+            if (Data[i].Actives.Length > (int)state)
+            {
+                Data[i].Image.gameObject.SetActive(Data[i].Actives[(int)state]);
+            }
             if (Data[i].RaycaseTargets.Length > (int)state)
             {
                 Data[i].Image.raycastTarget = Data[i].RaycaseTargets[(int)state];

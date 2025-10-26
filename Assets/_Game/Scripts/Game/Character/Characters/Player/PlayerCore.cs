@@ -7,6 +7,8 @@ public class PlayerCore : CoreSystem
     {
         base.Initialize(stats);
 
+        StateMachine.IsDebug = true;
+
         StateMachine.AddState(STATE.IDLE, new PlayerIdleState(this));
         StateMachine.AddState(STATE.MOVE, new PlayerMoveState(this));
         StateMachine.AddState(STATE.ATTACK, new PlayerAttackState(this));

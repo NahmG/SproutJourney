@@ -29,7 +29,7 @@ public static class SimplePool
             m_active = new List<GameUnit>();
         }
 
-        // Spawn an object from our pool with position, rotation and parent
+        // Spawn an object from pool with position, rotation and parent
         public GameUnit Spawn(Vector3 pos, Quaternion rot, Transform parent)
         {
             GameUnit obj;
@@ -52,10 +52,31 @@ public static class SimplePool
             return obj;
         }
 
-        // Spawn an object from our pool with position and rotation
+        // Spawn an object from pool with position and rotation
         public GameUnit Spawn(Vector3 pos, Quaternion rot)
         {
             return Spawn(pos, rot, m_sRoot);
+        }
+
+        //Spawn object from pool
+        public GameUnit Spawn()
+        {
+            GameUnit obj;
+
+            if (m_inactive.Count <= 0)
+            {
+                obj = (GameUnit)GameObject.Instantiate(m_prefab, m_sRoot);
+            }
+            else
+            {
+                // Grab the last object in the inactive array
+                obj = m_inactive.Dequeue();
+            }
+
+            m_active.Add(obj);
+            obj.gameObject.SetActive(true);
+
+            return obj;
         }
 
         // Return an object to the inactive pool.
@@ -88,6 +109,11 @@ public static class SimplePool
         {
             poolInstance.Add(prefab.poolType, new Pool(prefab, amount, parent));
         }
+    }
+
+    public static T Spawn<T>(PoolType poolType) where T : GameUnit
+    {
+        return poolInstance[poolType].Spawn() as T;
     }
 
     public static T Spawn<T>(PoolType poolType, Vector3 pos, Quaternion rot) where T : GameUnit

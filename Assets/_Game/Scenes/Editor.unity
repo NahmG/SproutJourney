@@ -427,52 +427,6 @@ MonoBehaviour:
   m_LightCookieSize: {x: 1, y: 1}
   m_LightCookieOffset: {x: 0, y: 0}
   m_SoftShadowQuality: 0
---- !u!1 &551283223
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 551283225}
-  - component: {fileID: 551283224}
-  m_Layer: 0
-  m_Name: NewLevel
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!114 &551283224
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 551283223}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 1cb921dc51a34fc448a8186ef0d1b546, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  playerSpawnPoint: {fileID: 0}
-  sprouts: []
---- !u!4 &551283225
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 551283223}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1392091389
 GameObject:
   m_ObjectHideFlags: 0
@@ -517,7 +471,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 52ed94c80051fe5468502129c1e7f5ae, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  newLevel: {fileID: 551283224}
+  newLevel: {fileID: 0}
   sproutPrefab: {fileID: 6408379702976508869, guid: e117d71b5dfc50b47b3a9206b50ed702, type: 3}
   landPrefab: {fileID: 3132702658605262083, guid: 1c7edff4400990549ac15af983a5ae98, type: 3}
 --- !u!1660057539 &9223372036854775807
@@ -528,4 +482,3 @@ SceneRoots:
   - {fileID: 339503063}
   - {fileID: 1392091390}
   - {fileID: 304504220}
-  - {fileID: 551283225}

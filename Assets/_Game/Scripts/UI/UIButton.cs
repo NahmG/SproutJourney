@@ -54,6 +54,8 @@ public class UIButton : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
         button.onClick.RemoveListener(OnBtnClick);
     }
 
+    public void SetIndex(int index) => this.index = index;
+
     public void SetData(string text)
     {
         if (textButton != null)

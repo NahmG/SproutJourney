@@ -15,11 +15,6 @@ public class Player : Character
         _nav = Core.NAVIGATION as PlayerNavigation;
     }
 
-    public void SetCell(Cell cell)
-    {
-        _nav.currentCell = cell;
-    }
-
     public override void OnDespawn()
     {
         base.OnDespawn();
@@ -39,7 +34,7 @@ public class Player : Character
 
     public void OnEnterNewCell(Cell cell)
     {
-        if (_nav.currentCell != null && cell.Land != _nav.currentCell.Land)
+        if (_nav.currentCell != null && cell.Land.LandType != _nav.currentCell.Land.LandType)
             _OnExitLand?.Invoke(_nav.currentCell.Land);
 
         _nav.currentCell = cell;

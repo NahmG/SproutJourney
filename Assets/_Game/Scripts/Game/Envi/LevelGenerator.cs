@@ -35,7 +35,8 @@ public class LevelGenerator : MonoBehaviour
     void SpawnLand(LAND_TYPE landType, [PropertyRange(1, 6)] int index = 1)
     {
         if (newLevel == null) return;
-        Land.CreateLand(landPrefab, newLevel.transform, landType, index);
+        Land land = Land.CreateLand(landPrefab, newLevel.transform, landType, index);
+        newLevel.Lands.Add(land);
     }
 
     [Button, PropertySpace(20)]
@@ -44,16 +45,29 @@ public class LevelGenerator : MonoBehaviour
         if (newLevel == null) return;
 
         string folderPath = "Assets/_Game/Prefabs/Levels";
-        if (!Directory.Exists(folderPath))
-            Directory.CreateDirectory(folderPath);
+        string baseName = "Level";
+        string prefabName = baseName;
+        string prefabPath = $"{folderPath}/{prefabName}.prefab";
 
-        // Generate a prefab file name
-        string prefabPath = $"{folderPath}/Level.prefab";
+        // Create folder if needed
+        if (!AssetDatabase.IsValidFolder(folderPath))
+        {
+            Debug.LogWarning($"Path {folderPath} Invalid!");
+            return;
+        }
 
-        // Save as prefab asset
-        PrefabUtility.SaveAsPrefabAsset(newLevel.gameObject, prefabPath);
+        // Find available name
+        int counter = 0;
+        while (AssetDatabase.LoadAssetAtPath<GameObject>(prefabPath) != null)
+        {
+            prefabName = $"{baseName}_{counter}";
+            prefabPath = $"{folderPath}/{prefabName}.prefab";
+            counter++;
+        }
 
-        Debug.Log($"✅ Saved prefab at: {prefabPath}");
+        // Save the prefab
+        PrefabUtility.SaveAsPrefabAssetAndConnect(newLevel.gameObject, prefabPath, InteractionMode.UserAction);
+        Debug.Log($"Prefab saved as: {prefabName}");
     }
 #endif
 }

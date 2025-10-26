@@ -28,7 +28,10 @@ namespace Core.Navigation
                 Destination = cell.Tf.position;
             }
             else
+            {
                 Destination = core.CHARACTER.TF.position;
+                InputHandler.Ins.ResetInput();
+            }
         }
 
         public override bool ReachDestination()
@@ -39,7 +42,7 @@ namespace Core.Navigation
 
         public bool CanMove(out Cell cell)
         {
-            bool canMove = UTILS.IsPlatformValid(currentCell.Tf.position, MoveDirection, LayerMask.GetMask(CONSTANTS.CELL_LAYER), out cell);
+            bool canMove = Cell.IsValid(core.CHARACTER.TF.position, MoveDirection, LayerMask.GetMask(CONSTANTS.CELL_LAYER), out cell);
             return canMove;
         }
 
